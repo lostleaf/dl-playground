@@ -11,7 +11,7 @@ BATCH_SIZE = 256
 N_INPUT = 28 * 28
 N_HIDDEN = 256
 N_OUTPUT = 10
-N_EPOCH = 5
+N_EPOCH = 50
 LR = .1
 try:
     ctx = mx.gpu()
@@ -35,7 +35,6 @@ def relu(X):
 
 
 def net(X, params):
-    X = X.as_in_context(ctx)
     X = X.reshape((-1, N_INPUT))
     h1 = relu(nd.dot(X, params['W1']) + params['b1'])
     output = nd.dot(h1, params['W2']) + params['b2']
@@ -89,6 +88,7 @@ def main():
         print 'Epoch %d' % e
         loss_total = 0.
         for data, label in train_data:
+            data = data.as_in_context(ctx)
             label = label.as_in_context(ctx)
             with ag.record():
                 output = net(data, params)
