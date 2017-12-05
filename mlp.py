@@ -1,11 +1,11 @@
 import matplotlib
-
-matplotlib.use('qt5agg')
-
 import mxnet as mx
+import time
 from mxnet import ndarray as nd
 from mxnet import autograd as ag
 from mxnet import gluon
+
+matplotlib.use('qt5agg')
 
 BATCH_SIZE = 256
 N_INPUT = 28 * 28
@@ -56,7 +56,6 @@ def test_acc(test_data, params):
 
 
 def main():
-
     mnist_train, mnist_test = get_data()
     n_train = len(mnist_train)
     train_data = gluon.data.DataLoader(mnist_train, BATCH_SIZE, shuffle=True)
@@ -86,6 +85,7 @@ def main():
     Train
     """
     for e in xrange(N_EPOCH):
+        t1 = time.time()
         print 'Epoch %d' % e
         loss_total = 0.
         for data, label in train_data:
@@ -99,6 +99,8 @@ def main():
                 param -= LR / BATCH_SIZE * param.grad
         print 'Avg loss %f' % (loss_total / n_train)
         print 'Avg accuracy %f' % test_acc(test_data, params)
+        t2 = time.time()
+        print 'Time cost %d seconds' % (t2 - t1)
 
 
 if __name__ == "__main__":
